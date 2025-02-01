@@ -1,7 +1,8 @@
 import sqlite3
+import os
 
 # Create a connection to a new SQLite database (it will be created if it doesn't exist)
-conn = sqlite3.connect('database_file/dummy.db')
+conn = sqlite3.connect(os.path.join('database_file', 'dummy.db'))
 
 # Create a cursor object to interact with the database
 cursor = conn.cursor()
@@ -35,6 +36,14 @@ cursor.execute('SELECT * FROM people')
 rows = cursor.fetchall()
 for row in rows:
     print(row)
+
+# Get schema
+cursor.execute("PRAGMA table_info(people)")
+schema = cursor.fetchall()
+
+with open(os.path.join('database_file', 'schema.txt'), 'w') as f:
+    for row in schema:
+        f.write(f"{row}\n")
 
 # Close the connection to the database
 conn.close()
