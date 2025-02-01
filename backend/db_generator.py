@@ -2,7 +2,7 @@ import sqlite3
 import os
 
 # Create a connection to a new SQLite database (it will be created if it doesn't exist)
-conn = sqlite3.connect(os.path.join('database_file', 'dummy.db'))
+conn = sqlite3.connect(os.path.join('backend', 'database_file', 'dummy.db'))
 
 # Create a cursor object to interact with the database
 cursor = conn.cursor()

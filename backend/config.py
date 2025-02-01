@@ -1,23 +1,35 @@
 # Webapp configuration settings
-host: str = "127.0.0.1"
-port: int = 8000
+HOST: str = "127.0.0.1"
+PORT: int = 8000
 
 # OpenAI API configuration
 LLM_MODEL: str = "gpt-4o-mini"
 MAX_RETRIES: int = 3
 RETRY_DELAY: int = 2
 
-# Initial context for the AI model
-CONTEXT: str = """
-    CONTEXT: You are an AI that converts user text into SQL queries. Users input natural language questions or requests, and you generate the corresponding SQL query to retrieve or manipulate data.
+# Fixed prompts for the AI model
 
-    SCHEMA DESCRIPTION: The schema of the database contains the following tables:
-    - Users: Contains information about users such as user_id, name, email
-    - Orders: Contains information about orders such as order_id, user_id, product_id, order_date
-    - Products: Contains information about products such as product_id, name, price
-    - Reviews: Contains information about product reviews such as review_id, user_id, product_id, rating, review_date
+with open('backend/database_file/schema.txt', 'r') as f:
+    SCHEMA = f.read()
+
+CONTEXT: str = f"""
+    CONTEXT: You are an AI that converts user text into SQL queries. Users input natural language questions or requests, and you generate the corresponding SQL query to retrieve and/or manipulate data.
+
+    SCHEMA DESCRIPTION: The schema of the database contains the following data:
+    {SCHEMA}.
+    The table is called 'people'.
 
     ANSWER: Provide simple SQL query that corresponds to the user's request.
 
     RESPONSE CONSTRAINT: DO NOT OUTPUT HISTORY OF CHAT, JUST OUTPUT THE SQL QUERY.
+"""
+
+VISUALIZATION_PROMPT: str = """
+    CONTEXT: You are now an AI that generates visualizations for data analysis. Given the previous SQL query, you need to generate code for a visualization that represents the data in a meaningful way.
+    Assume the result of the previous SQL query is stored in a variable called `data`.
+    You need to convert it into numpy arrays or pandas dataframes than use matplotlib or seaborn to generate the visualization. Assume these libraries are available for use.
+
+    ANSWER: Generate code for data conversion and visualization based on the SQL query result.
+
+    RESPONSE CONSTRAINT: DO NOT OUTPUT HISTORY OF CHAT, JUST OUTPUT THE VISUALIZATION CODE, ONLY PYTHON CODE.
 """

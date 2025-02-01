@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 from routers import query_db
-from config import host, port
+from config import HOST, PORT
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -22,4 +22,4 @@ async def read_root():
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host=host, port=port)
+    uvicorn.run(app, host=HOST, port=PORT)

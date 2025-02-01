@@ -1,7 +1,11 @@
+import io
+import matplotlib.pyplot as plt
 import logging
-from fastapi import APIRouter, Form, Body
+from fastapi import APIRouter, Body
 from llm import OpenAIChatbot
-from config import CONTEXT
+from manage_db import exec_sql_query
+from utils import preprocess_code
+from config import CONTEXT, VISUALIZATION_PROMPT
 
 
 # Configure logging
@@ -13,9 +17,9 @@ router = APIRouter()
 
 @router.post("/query_db")
 async def query_db(
-    message: str = Body(..., embed=True),
-    history: list[str] = Body([], embed=True),
-    context: list[str] = CONTEXT
+    message: str = Body(...),
+    history: list[str] = Body(...),
+    context: list[str] = CONTEXT,
 ) -> str:
     """
     Generate SQL from user input using an LLM. Then execute the SQL query on the database.
@@ -40,14 +44,34 @@ async def query_db(
 
     # Generate SQL query
     chatbot = OpenAIChatbot()
-    response = chatbot.chat(message=message, history=history)
+    sql_response = chatbot.chat(message=message, history=history)
 
     # Log query and response
     logger.info(f"Initial context: {context}")
     logger.info(f"History: {history}")
-    logger.info(f"Generated SQL: {response}")
+    logger.info(f"Generated SQL: {sql_response}")
 
     # Execute SQL query on database
-    # ...
+    data = exec_sql_query(sql_query=sql_response)
 
-    return response
+    # Generate visualization code
+    history = history + [{"role": "system", "content": sql_response}]
+    vis_response = chatbot.chat(message=VISUALIZATION_PROMPT, history=history)
+    vis_response = preprocess_code(vis_response)
+
+    # Log visualization code
+    logger.info(f"Generated visualization code: {vis_response}")
+
+    # Execute visualization code
+    buf = io.BytesIO()
+    exec(vis_response)
+    image = buf.getvalue()
+    plt.show()
+
+    # Return SQL query result and visualization plot
+    return {
+        "sql_response": sql_response,
+        "vis_response": vis_response,
+        "data": data,
+        "image": image,
+    }

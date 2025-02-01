@@ -2,7 +2,7 @@ import os
 import time
 import openai
 from dotenv import load_dotenv
-from openai import OpenAIError
+from openai.error import OpenAIError
 from config import LLM_MODEL, MAX_RETRIES, RETRY_DELAY
 from typing import List, Optional
 
