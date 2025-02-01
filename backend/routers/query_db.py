@@ -1,5 +1,5 @@
 import logging
-from fastapi import APIRouter, Form
+from fastapi import APIRouter, Form, Body
 from llm import OpenAIChatbot
 from config import CONTEXT
 
@@ -13,9 +13,9 @@ router = APIRouter()
 
 @router.post("/query_db")
 async def query_db(
-    message: str = Form(...),
-    history: list[str] = Form(...),
-    context: list[str] = CONTEXT,
+    message: str = Body(..., embed=True),
+    history: list[str] = Body([], embed=True),
+    context: list[str] = CONTEXT
 ) -> str:
     """
     Generate SQL from user input using an LLM. Then execute the SQL query on the database.
