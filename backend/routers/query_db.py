@@ -45,6 +45,7 @@ async def query_db(
     # Generate SQL query
     chatbot = OpenAIChatbot()
     sql_response = chatbot.chat(message=message, history=history)
+    sql_response = preprocess_code(sql_response)
 
     # Log query and response
     logger.info(f"Initial context: {context}")

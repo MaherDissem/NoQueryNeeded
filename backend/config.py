@@ -26,8 +26,8 @@ CONTEXT: str = f"""
 
 VISUALIZATION_PROMPT: str = """
     CONTEXT: You are now an AI that generates visualizations for data analysis. Given the previous SQL query, you need to generate code for a visualization that represents the data in a meaningful way.
-    Assume the result of the previous SQL query is stored in a variable called `data`.
-    You need to convert it into numpy arrays or pandas dataframes than use matplotlib or seaborn to generate the visualization. Assume these libraries are available for use.
+    Assume the actual result of the previous SQL query is stored in a variable called `data`.
+    You need to convert it into numpy arrays or pandas dataframes than use matplotlib to generate the visualization. Assume these libraries are available for use.
 
     ANSWER: Generate code for data conversion and visualization based on the SQL query result.
 
