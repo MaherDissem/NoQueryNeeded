@@ -5,7 +5,7 @@ from fastapi import APIRouter, Body
 from llm import OpenAIChatbot
 from manage_db import exec_sql_query
 from utils import preprocess_code
-from config import CONTEXT, VISUALIZATION_PROMPT
+from config import CONTEXT, get_visualization_prompt
 
 
 # Configure logging
@@ -57,6 +57,7 @@ async def query_db(
 
     # Generate visualization code
     history = history + [{"role": "system", "content": sql_response}]
+    VISUALIZATION_PROMPT = get_visualization_prompt(data)
     vis_response = chatbot.chat(message=VISUALIZATION_PROMPT, history=history)
     vis_response = preprocess_code(vis_response)
 
