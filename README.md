@@ -7,7 +7,7 @@ This project is a web application that enables users to query a SQL database usi
 This project was developed on Feb 1st, 2025 for the CONUHACKS IX hackathon at Concordia University.
 
 ## Demo
-[Click to view the demo video.](https://drive.google.com/file/d/197BahFwKiHm4Dj9CQXysr6hj7Z_z3UtO/view?usp=sharing)
+[Click to view the demo video.](https://youtu.be/eQp4pXhU3m8)
 
 ## Setting up
 
@@ -15,8 +15,8 @@ Follow these steps to set up and run the application.
 
 #### **1. Clone the Repository**  
 ```bash
-git clone https://github.com/MaherDissem/Text2SQL
-cd Text2SQL  
+git clone https://github.com/MaherDissem/NoQueryNeeded
+cd NoQueryNeeded  
 ```
 
 #### **2. Get Dependencies**
