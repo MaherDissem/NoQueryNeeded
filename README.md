@@ -7,7 +7,7 @@ This project is a web application that enables users to query a SQL database usi
 This project was developed on Feb 1st, 2025 for the CONUHACKS IX hackathon at Concordia University.
 
 ## Demo
-[Click to view the demo video.](Demo.mp4)
+[Click to view the demo video.](https://drive.google.com/file/d/197BahFwKiHm4Dj9CQXysr6hj7Z_z3UtO/view?usp=sharing)
 
 ## Setting up
 
