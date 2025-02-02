@@ -39,7 +39,6 @@ CONTEXT: str = f"""
 
     SCHEMA DESCRIPTION: The schema of the database contains the following data:
     {SCHEMA}.
-    The table is called 'people'.
 
     ANSWER: Provide simple SQL query that corresponds to the user's request. Only provide the SQL query to retrieve the relevant data, not to analyze or process it.
 
