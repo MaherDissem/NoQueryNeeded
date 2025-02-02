@@ -20,35 +20,44 @@ const ChatBot = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/query_db", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          message: message,
-          history: messages.map((msg) => msg.text), // Pass conversation history
-        }),
-      });
+        const response = await fetch("http://127.0.0.1:8000/query_db", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                message: message,
+                history: messages.filter(msg => msg.text).map(msg => msg.text), // Exclude images from history
+            }),
+        });
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch bot response");
-      }
+        if (!response.ok) {
+            throw new Error("Failed to fetch bot response");
+        }
 
-      const data = await response.json();
-      const botMessage = { text: data.response, sender: "bot" };
+        const data = await response.json();
+        
+        const botMessages = [{ text: data.sql_response, sender: "bot" }];
 
-      setMessages((prevMessages) => [...prevMessages, botMessage]);
+        if (data.data) {
+            botMessages.push({ text: `Query Result: ${JSON.parse(data.data)}`, sender: "bot" });
+        }
+
+        if (data.image) {
+            botMessages.push({ image: `data:image/png;base64,${data.image}`, sender: "bot" });
+        }
+
+        setMessages((prevMessages) => [...prevMessages, ...botMessages]);
     } catch (error) {
-      console.error("Error:", error);
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { text: "Sorry, something went wrong. Please try again.", sender: "bot" },
-      ]);
+        console.error("Error:", error);
+        setMessages((prevMessages) => [
+            ...prevMessages,
+            { text: "Sorry, something went wrong. Please try again.", sender: "bot" },
+        ]);
     } finally {
-      setIsLoading(false);
+        setIsLoading(false);
     }
-  };
+};
 
   const handleSendMessage = () => {
     if (inputValue.trim() === "") return;
@@ -66,12 +75,13 @@ const ChatBot = () => {
   return (
     <div className="chat-bot">
       <div className="chat-window" ref={chatWindowRef}>
-        {messages.map((message, index) => (
-          <div key={index} className={`message ${message.sender}`}>
-            {message.text}
-          </div>
-        ))}
-        {isLoading && <div className="message bot"><em>Bot is typing...</em></div>}
+          {messages.map((message, index) => (
+              <div key={index} className={`message ${message.sender}`}>
+                  {message.text && <p>{message.text}</p>}
+                  {message.image && <img src={message.image} alt="Bot response" style={{ maxWidth: "2000px", borderRadius: "8px" }} />}
+              </div>
+          ))}
+          {isLoading && <div className="message bot"><em>Bot is typing...</em></div>}
       </div>
       <div className="input-area">
         <input

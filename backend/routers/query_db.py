@@ -1,7 +1,10 @@
 import io
 import matplotlib.pyplot as plt
 import logging
+import base64
+import json
 from fastapi import APIRouter, Body
+from fastapi.responses import JSONResponse
 from llm import OpenAIChatbot
 from manage_db import exec_sql_query
 from utils import preprocess_code
@@ -54,7 +57,7 @@ async def query_db(
 
     # Execute SQL query on database
     data = exec_sql_query(sql_query=sql_response)
-
+    logger.info(f"Executed SQL query: {data}")
     # Generate visualization code
     history = history + [{"role": "system", "content": sql_response}]
     VISUALIZATION_PROMPT = get_visualization_prompt(data)
@@ -66,14 +69,21 @@ async def query_db(
 
     # Execute visualization code
     buf = io.BytesIO()
-    exec(vis_response)
-    image = buf.getvalue()
-    plt.show()
+    try:
+        exec(vis_response, {"plt": plt, "io": io, "buf": buf})  # Execute with safe context
+        plt.savefig(buf, format="png")  # Save figure to buffer
+        plt.close()
+        buf.seek(0)
+        image_base64 = base64.b64encode(buf.getvalue()).decode("utf-8")  # Convert to base64
+    except Exception as e:
+        logger.error(f"Error executing visualization code: {e}")
+        image_base64 = None
+    # plt.show()
 
     # Return SQL query result and visualization plot
-    return {
+    return JSONResponse(content={
         "sql_response": sql_response,
         "vis_response": vis_response,
-        "data": data,
-        "image": image,
-    }
+        "data": json.dumps(data),  # Convert list to JSON string
+        "image": image_base64,
+    })

@@ -34,7 +34,7 @@ def get_visualization_prompt(data):
 
         You need to convert it into numpy arrays or pandas dataframes than use matplotlib to generate the visualization. Assume these libraries are available for use.
 
-        ANSWER: Generate code for data conversion and visualization based on the SQL query result.
+        ANSWER: Generate code for data conversion and visualization based on the SQL query result. Dont include plt.show() or any other display functions.
 
         RESPONSE CONSTRAINT: DO NOT OUTPUT HISTORY OF CHAT, JUST OUTPUT THE VISUALIZATION CODE, ONLY PYTHON CODE.
     """
