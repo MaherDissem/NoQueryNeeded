@@ -18,6 +18,16 @@ CREATE TABLE IF NOT EXISTS people (
     hometown TEXT DEFAULT 'Unknown'
 )
 ''')
+# Create a table named 'sales'
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS sales (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    product TEXT NOT NULL,
+    price REAL NOT NULL,
+    quantity INTEGER NOT NULL,
+    date TEXT NOT NULL
+)
+''')
 
 # Insert some dummy data into the 'people' table
 cursor.executemany('''
@@ -64,23 +74,81 @@ INSERT INTO people (name, age, height, score, hometown) VALUES (?, ?, ?, ?, ?)
     ('Megan', 28, 1.64, 93, 'Cleveland'),
     ('Noah', 41, 1.72, 82, 'Buffalo')
 ])
-
-# Commit the changes
 conn.commit()
 
-# Query the data to verify it's been inserted
-cursor.execute('SELECT * FROM people')
+# Insert some dummy data into the 'sales' table
+cursor.executemany('''
+INSERT INTO sales (product, price, quantity, date) VALUES (?, ?, ?, ?)
+''', [
+    ('Apple', 1.0, 100, '2022-01-01'),
+    ('Banana', 0.5, 200, '2022-01-02'),
+    ('Cherry', 2.0, 50, '2022-01-03'),
+    ('Date', 3.0, 30, '2022-01-04'),
+    ('Elderberry', 4.0, 20, '2022-01-05'),
+    ('Fig', 1.5, 80, '2022-01-06'),
+    ('Grape', 2.5, 70, '2022-01-07'),
+    ('Honeydew', 3.5, 40, '2022-01-08'),
+    ('Kiwi', 1.0, 90, '2022-01-09'),
+    ('Lemon', 0.5, 120, '2022-01-10'),
+    ('Mango', 2.0, 60, '2022-01-11'),
+    ('Nectarine', 3.0, 40, '2022-01-12'),
+    ('Orange', 1.5, 80, '2022-01-13'),
+    ('Peach', 2.5, 70, '2022-01-14'),
+    ('Quince', 3.5, 50, '2022-01-15'),
+    ('Raspberry', 1.0, 100, '2022-01-16'),
+    ('Strawberry', 0.5, 200, '2022-01-17'),
+    ('Tomato', 2.0, 70, '2022-01-18'),
+    ('Ugli fruit', 3.0, 30, '2022-01-19'),
+    ('Vanilla bean', 4.0, 20, '2022-01-20'),
+    ('Watermelon', 1.5, 90, '2022-01-21'),
+    ('Xigua', 0.5, 120, '2022-01-22'),
+    ('Yuzu', 2.0, 60, '2022-01-23'),
+    ('Zucchini', 3.0, 40, '2022-01-24'),
+    ('Apricot', 1.0, 100, '2022-01-25'),
+    ('Blueberry', 0.5, 200, '2022-01-26'),
+    ('Cantaloupe', 2.0, 50, '2022-01-27'),
+    ('Dragonfruit', 3.0, 30, '2022-01-28'),
+    ('Eggplant', 4.0, 20, '2022-01-29'),
+    ('Fennel', 1.5, 80, '2022-01-30'),
+    ('Grapefruit', 2.5, 70, '2022-01-31'),
+    ('Huckleberry', 3.5, 40, '2022-02-01'),
+    ('Jujube', 1.0, 90, '2022-02-02'),
+    ('Kumquat', 0.5, 120, '2022-02-03'),
+    ('Lime', 2.0, 60, '2022-02-04'),
+    ('Mandarin orange', 3.0, 40, '2022-02-05'),
+    ('Nashi pear', 1.5, 80, '2022-02-06'),
+    ('Olive', 2.5, 70, '2022-02-07'),
+    ('Papaya', 3.5, 50, '2022-02-08'),
+    ('Quince', 1.0, 100, '2022-02-09'),
+    ('Rambutan', 0.5, 200, '2022-02-10'),
+    ('Starfruit', 2.0, 70, '2022-02-11'),
+    ('Tamarillo', 3.0, 30, '2022-02-12'),
+    ('Ugli fruit', 4.0, 20, '2022-02-13'),
+    ('Vanilla bean', 1.5, 90, '2022-02-14'),
+    ('Watermelon', 0.5, 120, '2022-02-15'),
+    ('Xigua', 2.0, 60, '2022-02-16'),
+    ('Yuzu', 3.0, 40, '2022-02-17'),
+    ('Zucchini', 1.0, 100, '2022-02-18'),
+    ('Apricot', 0.5, 200, '2022-02-19'),
+    ('Blueberry', 2.0, 50, '2022-02-20'),
+    ('Cantaloupe', 3.0, 30, '2022-02-21'),
+    ('Dragonfruit', 1.5, 80, '2022-02-22'),
+])
+conn.commit()
 
-# Fetch and display all rows
-rows = cursor.fetchall()
-for row in rows:
-    print(row)
-
-# Get schema
-cursor.execute("PRAGMA table_info(people)")
-schema = cursor.fetchall()
 
 with open(os.path.join('backend', 'database_file', 'schema.txt'), 'w') as f:
+    # Save people schema
+    f.write("'people' table schema:\n")
+    cursor.execute("PRAGMA table_info(people)")
+    schema = cursor.fetchall()
+    for row in schema:
+        f.write(f"{row}\n")
+
+    # Save sales schema
+    f.write("\n'sales' table schema:\n")
+    cursor.execute("PRAGMA table_info(sales)")
+    schema = cursor.fetchall()
     for row in schema:
         f.write(f"{row}\n")
 

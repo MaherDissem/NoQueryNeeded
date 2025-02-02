@@ -1,6 +1,14 @@
+'people' table schema:
 (0, 'id', 'INTEGER', 0, None, 1)
 (1, 'name', 'TEXT', 1, None, 0)
 (2, 'age', 'INTEGER', 1, None, 0)
 (3, 'height', 'REAL', 0, '0.0', 0)
 (4, 'score', 'INTEGER', 0, '0', 0)
 (5, 'hometown', 'TEXT', 0, "'Unknown'", 0)
+
+'sales' table schema:
+(0, 'id', 'INTEGER', 0, None, 1)
+(1, 'product', 'TEXT', 1, None, 0)
+(2, 'price', 'REAL', 1, None, 0)
+(3, 'quantity', 'INTEGER', 1, None, 0)
+(4, 'date', 'TEXT', 1, None, 0)

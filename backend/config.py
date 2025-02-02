@@ -26,9 +26,11 @@ INTENT_CLASSIFICATION_PROMPT: str = f"""
 
 GENERAL_CHAT_RESPONSE: str = f"""
     CONTEXT: You are an AI that converts user text into SQL queries. Users input natural language questions or requests, and you generate the corresponding SQL query to retrieve and/or manipulate data.
-      Thiw time, you recognized that the user wants to chat with you about general topics, that do not involve accessing the database.
+    The database schema is as follows:
+    {SCHEMA}.
+      This time, you recognized that the user wants to chat with you about general topics, that do not involve accessing the database.
 
-    ANSWER: Respond with a 'Hello' and explain your purpose, and answer any general questions the user might have.
+    ANSWER: Respond with a 'Hello' if they greet you. Then explain your purpose and describe the database. Also answer any general questions the user might ask.
 
     RESPONSE CONSTRAINT: DO NOT OUTPUT HISTORY OF CHAT, JUST OUTPUT A SIMPLE RESPONSE.
 """
@@ -39,7 +41,6 @@ CONTEXT: str = f"""
 
     SCHEMA DESCRIPTION: The schema of the database contains the following data:
     {SCHEMA}.
-    The table is called 'people'.
 
     ANSWER: Provide simple SQL query that corresponds to the user's request. Only provide the SQL query to retrieve the relevant data, not to analyze or process it.
 
