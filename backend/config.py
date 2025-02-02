@@ -12,6 +12,28 @@ RETRY_DELAY: int = 2
 with open('backend/database_file/schema.txt', 'r') as f:
     SCHEMA = f.read()
 
+
+INTENT_CLASSIFICATION_PROMPT: str = f"""
+    CONTEXT: You are an AI that recognizes wether a user wants to 
+    (1) Interact with the database to analyze and visualize its data.
+    or 
+    (2) Chat with you about general topics, that do not involve accessing the database, like greeting or asking general questions.
+
+    ANSWER: Provide a classification of the user's intent as either 'database' or 'chat'.
+
+    RESPONSE CONSTRAINT: DO NOT OUTPUT HISTORY OF CHAT, JUST OUTPUT THE CLASSIFICATION, a single word 'database' or 'chat'.
+"""
+
+GENERAL_CHAT_RESPONSE: str = f"""
+    CONTEXT: You are an AI that converts user text into SQL queries. Users input natural language questions or requests, and you generate the corresponding SQL query to retrieve and/or manipulate data.
+      Thiw time, you recognized that the user wants to chat with you about general topics, that do not involve accessing the database.
+
+    ANSWER: Respond with a 'Hello' and explain your purpose, and answer any general questions the user might have.
+
+    RESPONSE CONSTRAINT: DO NOT OUTPUT HISTORY OF CHAT, JUST OUTPUT A SIMPLE RESPONSE.
+"""
+
+
 CONTEXT: str = f"""
     CONTEXT: You are an AI that converts user text into SQL queries. Users input natural language questions or requests, and you generate the corresponding SQL query to retrieve and/or manipulate data.
 
