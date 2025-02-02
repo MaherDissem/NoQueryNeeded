@@ -28,7 +28,7 @@ async def query_db(
     message: str = Body(...),
     history: list[str] = Body(...),
     context: list[str] = CONTEXT,
-) -> str:
+) -> JSONResponse:
     """
     Generate SQL from user input using an LLM. Then execute the SQL query on the database.
 
