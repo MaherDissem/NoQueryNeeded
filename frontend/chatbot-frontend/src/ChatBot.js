@@ -80,7 +80,23 @@ const ChatBot = () => {
       <div className="chat-window" ref={chatWindowRef}>
           {messages.map((message, index) => (
               <div key={index} className={`message ${message.sender}`}>
-                  {message.text && <p>{message.text}</p>}
+                  {message.text && 
+                  <p>
+                    {message.sender === "bot" && (
+                      <span style={{
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: "40px",
+                        height: "40px",
+                        borderRadius: "50%",
+                        backgroundColor: "#000", // Black background
+                        color: "#fff", // White text color
+                        marginRight: "10px",
+                        fontSize: "1.5rem",
+                      }}>🤖</span>
+                    )}
+                    {message.text}
+                  </p>}
                   {message.image && <img src={message.image} alt="Bot response" 
                     style={{ 
                       maxWidth: "100%", 
