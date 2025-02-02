@@ -8,12 +8,15 @@ const ChatBot = () => {
   const chatWindowRef = useRef(null);
   const inputRef = useRef(null);
 
-  // Scroll to the latest message
   useEffect(() => {
     if (chatWindowRef.current) {
-      chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
+        chatWindowRef.current.scrollTo({
+            top: chatWindowRef.current.scrollHeight,
+            behavior: "smooth", // Adds smooth scrolling
+        });
     }
-  }, [messages]);
+}, [messages]);
+
 
   // Function to send user message to the backend API
   const sendMessageToBot = async (message) => {
@@ -37,16 +40,20 @@ const ChatBot = () => {
 
         const data = await response.json();
         
-        const botMessages = [{ text: data.sql_response, sender: "bot" }];
+        const botMessages = [];
 
-        if (data.data) {
+        if (data.data && data.additional_message.trim() === "") {
+            botMessages.push({ text: data.sql_response, sender: "bot" });
             botMessages.push({ text: `Query Result: ${JSON.parse(data.data)}`, sender: "bot" });
-        }
-
-        if (data.image) {
             botMessages.push({ image: `data:image/png;base64,${data.image}`, sender: "bot" });
         }
-
+        else if (data.additional_message.trim() !== "") {
+          botMessages.push({ text: data.additional_message, sender: "bot" });
+        }
+        // if (data.image && JSON.parse(data.data).length > 0) {
+        //     botMessages.push({ image: `data:image/png;base64,${data.image}`, sender: "bot" });
+        // }
+        console.log(botMessages);
         setMessages((prevMessages) => [...prevMessages, ...botMessages]);
     } catch (error) {
         console.error("Error:", error);
@@ -78,7 +85,18 @@ const ChatBot = () => {
           {messages.map((message, index) => (
               <div key={index} className={`message ${message.sender}`}>
                   {message.text && <p>{message.text}</p>}
-                  {message.image && <img src={message.image} alt="Bot response" style={{ maxWidth: "2000px", borderRadius: "8px" }} />}
+                  
+                  {message.image && <img src={message.image} 
+                  alt="Bot response" 
+                  style={{ 
+                    maxWidth: "100%", 
+                    height: "auto", 
+                    borderRadius: "8px",
+                    display: "block",
+                    margin: "auto"
+                }} 
+         />}
+
               </div>
           ))}
           {isLoading && <div className="message bot"><em>Bot is typing...</em></div>}

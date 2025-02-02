@@ -45,6 +45,10 @@ async def query_db(
         {"role": "user", "content": message} for message in history
     ]
 
+    image_base64 = None
+    vis_response = ""
+    additional_message = ""
+
     # Generate SQL query
     chatbot = OpenAIChatbot()
     sql_response = chatbot.chat(message=message, history=history)
@@ -60,25 +64,28 @@ async def query_db(
     logger.info(f"Executed SQL query: {data}")
     # Generate visualization code
     history = history + [{"role": "system", "content": sql_response}]
-    VISUALIZATION_PROMPT = get_visualization_prompt(data)
-    vis_response = chatbot.chat(message=VISUALIZATION_PROMPT, history=history)
-    vis_response = preprocess_code(vis_response)
+    logger.info(len(data))
+    if len(data) > 0:
+        VISUALIZATION_PROMPT = get_visualization_prompt(data)
+        vis_response = chatbot.chat(message=VISUALIZATION_PROMPT, history=history)
+        vis_response = preprocess_code(vis_response)
 
-    # Log visualization code
-    logger.info(f"Generated visualization code: {vis_response}")
+        # Log visualization code
+        logger.info(f"Generated visualization code: {vis_response}")
 
-    # Execute visualization code
-    buf = io.BytesIO()
-    try:
-        exec(vis_response, {"plt": plt, "io": io, "buf": buf})  # Execute with safe context
-        plt.savefig(buf, format="png")  # Save figure to buffer
-        plt.close()
-        buf.seek(0)
-        image_base64 = base64.b64encode(buf.getvalue()).decode("utf-8")  # Convert to base64
-    except Exception as e:
-        logger.error(f"Error executing visualization code: {e}")
-        image_base64 = None
-    # plt.show()
+        # Execute visualization code
+        buf = io.BytesIO()
+        try:
+            exec(vis_response, {"plt": plt, "io": io, "buf": buf})  # Execute with safe context
+            plt.savefig(buf, format="png")  # Save figure to buffer
+            plt.close()
+            buf.seek(0)
+            image_base64 = base64.b64encode(buf.getvalue()).decode("utf-8")  # Convert to base64
+        except Exception as e:
+            logger.error(f"Error executing visualization code: {e}")
+            image_base64 = None
+    else:
+        additional_message = "No data found for visualization."
 
     # Return SQL query result and visualization plot
     return JSONResponse(content={
@@ -86,4 +93,5 @@ async def query_db(
         "vis_response": vis_response,
         "data": json.dumps(data),  # Convert list to JSON string
         "image": image_base64,
+        "additional_message": additional_message,
     })
